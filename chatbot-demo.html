@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunshine Plumbing &amp; Heating — Demo Site with Chat</title>
+<style>
+  :root { --ink:#1c2733; --accent:#e07b2a; --accent2:#1463a8; --bg:#f7f5f1; --card:#ffffff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family: Georgia, 'Times New Roman', serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+  .demo-banner { background:#1c2733; color:#fff; text-align:center; padding:8px 12px; font-family:Helvetica,Arial,sans-serif; font-size:13px; letter-spacing:.02em; }
+  header.site { background:var(--card); border-bottom:3px solid var(--accent); padding:18px 22px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+  header.site h1 { font-size:24px; }
+  header.site .phone { font-family:Helvetica,Arial,sans-serif; font-weight:bold; color:var(--accent2); }
+  main { max-width:860px; margin:0 auto; padding:28px 20px 120px; }
+  .hero { background:var(--card); border-radius:10px; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+  .hero h2 { font-size:30px; margin-bottom:10px; }
+  .hero p { margin-bottom:14px; }
+  .cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-top:18px; }
+  .col { background:var(--card); border-radius:10px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+  .col h3 { margin-bottom:8px; color:var(--accent2); }
+  .col ul { margin-left:18px; }
+  .col li { margin-bottom:4px; }
+  .try { margin-top:22px; background:#fff7ec; border:1px dashed var(--accent); border-radius:10px; padding:18px 20px; font-family:Helvetica,Arial,sans-serif; font-size:15px; }
+  /* ------- chat widget ------- */
+  #tsw-chat-btn { position:fixed; right:20px; bottom:20px; z-index:50; background:var(--accent2); color:#fff; border:none; border-radius:28px; padding:14px 20px; font-family:Helvetica,Arial,sans-serif; font-size:15px; font-weight:bold; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.25); }
+  #tsw-chat-btn:hover { background:#0f4e85; }
+  #tsw-chat { position:fixed; right:20px; bottom:82px; z-index:50; width:min(360px, calc(100vw - 32px)); height:480px; max-height:calc(100vh - 110px); background:#fff; border-radius:12px; box-shadow:0 10px 34px rgba(0,0,0,.30); display:none; flex-direction:column; overflow:hidden; font-family:Helvetica,Arial,sans-serif; }
+  #tsw-chat.open { display:flex; }
+  .chat-head { background:var(--accent2); color:#fff; padding:12px 14px; }
+  .chat-head .t { font-weight:bold; font-size:15px; }
+  .chat-head .s { font-size:12px; opacity:.85; }
+  #tsw-msgs { flex:1; overflow-y:auto; padding:12px; background:#f4f6f8; display:flex; flex-direction:column; gap:8px; }
+  .msg { max-width:85%; padding:9px 12px; border-radius:12px; font-size:14px; white-space:pre-wrap; word-wrap:break-word; }
+  .msg.bot { background:#fff; border:1px solid #dde3e8; align-self:flex-start; border-bottom-left-radius:3px; }
+  .msg.user { background:var(--accent2); color:#fff; align-self:flex-end; border-bottom-right-radius:3px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; padding:0 12px 8px; background:#f4f6f8; }
+  .chip { background:#fff; border:1px solid var(--accent2); color:var(--accent2); border-radius:16px; padding:5px 11px; font-size:13px; cursor:pointer; }
+  .chip:hover { background:var(--accent2); color:#fff; }
+  .chat-input { display:flex; border-top:1px solid #dde3e8; }
+  .chat-input input { flex:1; border:none; padding:12px; font-size:14px; outline:none; }
+  .chat-input button { background:var(--accent); color:#fff; border:none; padding:0 18px; font-weight:bold; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="demo-banner">DEMO — “Sunshine Plumbing &amp; Heating” is a fictional business. This page shows the front-desk chat a real business would get.</div>
+
+<header class="site">
+  <h1>Sunshine Plumbing &amp; Heating</h1>
+  <div class="phone">Call: (555) 013-4477</div>
+</header>
+
+<main>
+  <section class="hero">
+    <h2>Plumbing problems don’t wait for business hours. Neither do we.</h2>
+    <p>Family-owned since 2009. Drains, water heaters, leaks, and remodels across the Lafayette area — with a real person on the phone, and this little chat answering questions when we’re on a job.</p>
+    <p><strong>Try the chat in the corner.</strong> Ask it about hours, prices, or booking a visit — that’s the whole demo.</p>
+  </section>
+
+  <div class="cols">
+    <div class="col">
+      <h3>Services</h3>
+      <ul>
+        <li>Drain cleaning &amp; clogs</li>
+        <li>Water heater repair &amp; install</li>
+        <li>Leak detection &amp; repair</li>
+        <li>Bathroom &amp; kitchen remodels</li>
+        <li>24/7 emergency calls</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Typical prices</h3>
+      <ul>
+        <li>Service call: $49 (waived with any repair)</li>
+        <li>Drain cleaning: from $129</li>
+        <li>Water heater install: from $1,450</li>
+        <li>Exact quote always given before work starts</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>Hours</h3>
+      <ul>
+        <li>Mon–Fri: 7:00 AM – 6:00 PM</li>
+        <li>Saturday: 8:00 AM – 2:00 PM</li>
+        <li>Sunday: emergencies only</li>
+        <li>Emergencies: 24/7, every day</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="try">
+    <strong>What you’re looking at:</strong> this chat answers the questions every front desk gets 20 times a day, and it can take a booking request when nobody can pick up the phone. It runs entirely on the page — no monthly AI bill, nothing to break.
+  </div>
+</main>
+
+<button id="tsw-chat-btn" onclick="tswToggle()">💬 Chat with us</button>
+
+<div id="tsw-chat" role="dialog" aria-label="Chat with Sunshine Plumbing">
+  <div class="chat-head">
+    <div class="t">Sunshine Plumbing &amp; Heating</div>
+    <div class="s">Front-desk chat — answers instantly, day or night</div>
+  </div>
+  <div id="tsw-msgs"></div>
+  <div class="chips" id="tsw-chips"></div>
+  <div class="chat-input">
+    <input id="tsw-in" type="text" placeholder="Type your question…" onkeydown="if(event.key==='Enter')tswSend()">
+    <button onclick="tswSend()">Send</button>
+  </div>
+</div>
+
+<script>
+/* ================= Third Shift Works front-desk chat (demo build) =================
+   Rule-based: instant, free to run, works offline. A buyer's build is trained on
+   THEIR questions, hours, and prices. This demo is trained on a fictional plumber. */
+var TSW = {
+  phone: "(555) 013-4477",
+  flow: null,          // null | {step:'name'|'phone'|'need', name, phone}
+  greeted: false
+};
+
+var KB = [
+  { keys:["hour","open","close","when"], a:"Our hours:\nMon–Fri: 7:00 AM – 6:00 PM\nSaturday: 8:00 AM – 2:00 PM\nSunday: emergencies only.\nEmergencies are 24/7 — call " + TSW.phone + "." },
+  { keys:["price","cost","charge","much","quote","estimate"], a:"Typical prices:\n• Service call: $49 (waived with any repair)\n• Drain cleaning: from $129\n• Water heater install: from $1,450\nWe always give an exact quote before any work starts. Want me to book a visit?" },
+  { keys:["drain","clog","slow","backed up","sewer"], a:"We clean drains and clear clogs — from $129 for a standard drain. If it's backing up right now, that's urgent: call " + TSW.phone + " or tap “Book a visit” and we'll get you on the schedule." },
+  { keys:["water heater","no hot water","heater"], a:"We repair and install water heaters. Installs start at $1,450 including the unit and permits. No hot water at all usually means same-day service — tap “Book a visit”." },
+  { keys:["leak","drip","burst","flood","water everywhere"], a:"For an active leak: shut off your main water valve if you can, then call " + TSW.phone + " — leaks count as emergencies and we're 24/7 for those. For slow drips, book a visit anytime." },
+  { keys:["area","serve","location","where","come to","lafayette","youngsville","broussard","scott","carencro"], a:"We serve Lafayette and the surrounding area — Youngsville, Broussard, Scott, Carencro, and nearby. Not sure you're in range? Give us your address in a booking request and we'll confirm." },
+  { keys:["warranty","guarantee"], a:"Every job carries a 1-year workmanship warranty. If something we fixed fails within the year, we come back and make it right at no charge." },
+  { keys:["emergency","urgent","asap","right now"], a:"Emergencies are 24/7. Call " + TSW.phone + " now and a real person answers. If it's not life-or-property urgent, the booking form here works too." },
+  { keys:["pay","card","cash","financ"], a:"We take cards, checks, and cash, and we offer financing on jobs over $1,000. The $49 service call is waived when you approve a repair." },
+  { keys:["human","person","someone","call me","phone number"], a:"Of course — call us at " + TSW.phone + " during business hours. Or tap “Book a visit”, leave your number, and we call you back." },
+  { keys:["book","appointment","schedule","visit","come out"], a:"BOOK" },
+  { keys:["hi","hello","hey","good morning","good afternoon"], a:"Hello! I can answer questions about hours, prices, and services — or take a booking request. What do you need?" },
+  { keys:["thank","thanks","great","perfect"], a:"Anytime. Anything else — hours, prices, or booking a visit?" },
+  { keys:["bye","goodbye"], a:"Thanks for stopping by. If anything leaks, drips, or backs up — you know where to find us. 👋" }
+];
+
+var CHIPS = ["Hours", "Prices", "Book a visit", "Service area", "Emergencies"];
+
+function tswToggle() {
+  var c = document.getElementById('tsw-chat');
+  c.classList.toggle('open');
+  if (c.classList.contains('open') && !TSW.greeted) {
+    TSW.greeted = true;
+    tswBot("Hi, I'm the front-desk chat for Sunshine Plumbing. Ask me about hours, prices, or services — or tap “Book a visit” and I'll take your details.");
+    tswChips();
+  }
+  if (c.classList.contains('open')) document.getElementById('tsw-in').focus();
+}
+function tswAdd(text, who) {
+  var box = document.getElementById('tsw-msgs');
+  var d = document.createElement('div');
+  d.className = 'msg ' + who; d.textContent = text;
+  box.appendChild(d); box.scrollTop = box.scrollHeight;
+}
+function tswBot(text) { tswAdd(text, 'bot'); }
+function tswChips() {
+  var row = document.getElementById('tsw-chips'); row.innerHTML = '';
+  CHIPS.forEach(function(label) {
+    var b = document.createElement('button'); b.className = 'chip'; b.textContent = label;
+    b.onclick = function() { tswHandle(label); };
+    row.appendChild(b);
+  });
+}
+function tswSend() {
+  var inp = document.getElementById('tsw-in');
+  var text = inp.value.trim(); if (!text) return;
+  inp.value = ''; tswHandle(text);
+}
+function tswHandle(text) {
+  tswAdd(text, 'user');
+  // --- booking flow in progress? ---
+  if (TSW.flow) {
+    var f = TSW.flow;
+    if (f.step === 'name')  { f.name = text;  f.step = 'phone'; tswBot("Thanks, " + f.name.split(' ')[0] + ". What's the best phone number to reach you?"); return; }
+    if (f.step === 'phone') { f.phone = text; f.step = 'need';  tswBot("Got it. Last thing — what do you need help with, in a sentence or two?"); return; }
+    if (f.step === 'need') {
+      var summary = "✅ Request received (demo)\n\nName: " + f.name + "\nPhone: " + f.phone + "\nNeed: " + text + "\n\nIn a real install, this goes straight to the business by text/email. Here it stays on this page — nothing was sent.";
+      TSW.flow = null; tswBot(summary); tswChips(); return;
+    }
+  }
+  var q = ' ' + text.toLowerCase() + ' ';
+  for (var i = 0; i < KB.length; i++) {
+    for (var j = 0; j < KB[i].keys.length; j++) {
+      if (q.indexOf(KB[i].keys[j]) !== -1) {
+        if (KB[i].a === "BOOK") { tswStartBooking(); return; }
+        tswBot(KB[i].a); return;
+      }
+    }
+  }
+  tswBot("I don't have that one yet — I'm the short-answers desk, not the whole office. 🙂\nYou can call us at " + TSW.phone + ", or tap “Book a visit” and leave your number; a human will call you back.");
+}
+function tswStartBooking() {
+  TSW.flow = { step: 'name' };
+  tswBot("Happy to. What's your name?");
+}
+</script>
+</body>
+</html>
