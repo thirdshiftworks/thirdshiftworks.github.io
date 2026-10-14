@@ -1,0 +1,59 @@
+name: Site status check
+
+# Checks the Third Shift Works site + demo page every 6 hours and commits
+# the result to status.json in this repo (read by status.html).
+# Install at: .github/workflows/status-check.yml in thirdshiftworks.github.io
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the site repo
+        uses: actions/checkout@v4
+
+      - name: Probe the pages and write status.json
+        run: |
+          SITE_CODE=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 30 https://thirdshiftworks.github.io/ || echo 000)
+          DEMO_CODE=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 30 https://thirdshiftworks.github.io/demos/chatbot-demo.html || echo 000)
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          # Preserve the scanner block from the previous status.json if present;
+          # it is written from scanner reports, not by this uptime check.
+          SCANNER='null'
+          if [ -f status.json ]; then
+            SCANNER=$(jq -c '.scanner // null' status.json 2>/dev/null || echo 'null')
+          fi
+          ok() { [ "$1" -ge 200 ] && [ "$1" -lt 400 ]; }
+          jq -n \
+            --arg now "$NOW" \
+            --argjson site_code "$SITE_CODE" \
+            --argjson demo_code "$DEMO_CODE" \
+            --argjson site_ok "$(ok "$SITE_CODE" && echo true || echo false)" \
+            --argjson demo_ok "$(ok "$DEMO_CODE" && echo true || echo false)" \
+            --argjson scanner "$SCANNER" \
+            '{
+              updated_at: $now,
+              site: { url: "https://thirdshiftworks.github.io/", http: $site_code, ok: $site_ok },
+              demo: { url: "https://thirdshiftworks.github.io/demos/chatbot-demo.html", http: $demo_code, ok: $demo_ok },
+              scanner: $scanner
+            }' > status.json
+          cat status.json
+
+      - name: Commit status.json if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add status.json
+          if git diff --cached --quiet; then
+            echo "status.json unchanged — nothing to commit."
+          else
+            git commit -m "status: automated uptime check"
+            git push
+          fi
