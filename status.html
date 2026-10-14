@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Status — Third Shift Works</title>
+<style>
+  :root { --ink:#182130; --night:#101725; --amber:#f0a840; --blue:#2f6fb2; --bg:#f6f4ef; --card:#ffffff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family: Georgia, 'Times New Roman', serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+  header.site { background:var(--night); color:#fff; padding:30px 22px; text-align:center; }
+  header.site h1 { font-size:30px; margin-bottom:6px; }
+  header.site .tag { color:var(--amber); font-style:italic; }
+  header.site nav { margin-top:12px; font-size:15px; }
+  header.site nav a { color:#fff; margin:0 10px; }
+  main { max-width:880px; margin:0 auto; padding:28px 20px 60px; }
+  section { margin-bottom:30px; }
+  h2 { font-size:23px; margin-bottom:10px; border-bottom:2px solid var(--amber); padding-bottom:4px; }
+  .card { background:var(--card); border-radius:10px; padding:22px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+  ul { margin-left:18px; } li { margin-bottom:5px; }
+  .overall { display:flex; align-items:center; gap:14px; font-size:20px; }
+  .dot { width:22px; height:22px; border-radius:50%; background:#999; flex:none; }
+  .dot.ok { background:#2e9e4f; }
+  .dot.bad { background:#c0392b; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid #e3ded2; font-size:15px; }
+  .row:last-child { border-bottom:none; }
+  .state { font-weight:bold; white-space:nowrap; }
+  .state.ok { color:#2e9e4f; }
+  .state.bad { color:#c0392b; }
+  .state.unknown { color:#888; }
+  .small { font-size:14px; color:#555; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <h1>Third Shift Works</h1>
+  <div class="tag">You post the job. It’s done by morning.</div>
+  <nav><a href="index.html">Home</a> · <a href="services/websites.html">Websites</a> · <a href="services/spreadsheets.html">Spreadsheets</a> · <a href="services/visualizers.html">Visualizers</a></nav>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Studio status</h2>
+    <div class="overall"><span class="dot" id="overall-dot"></span><span id="overall-text">Checking…</span></div>
+    <p class="small" style="margin-top:10px;">An automated check loads this site and the demo page every few hours and records the result here. Last check: <span id="last-check">—</span></p>
+  </section>
+
+  <section>
+    <h2>Checks</h2>
+    <div class="card">
+      <div class="row"><span>Studio website (this site)</span><span class="state unknown" id="site-state">—</span></div>
+      <div class="row"><span>Front-desk chat demo page</span><span class="state unknown" id="demo-state">—</span></div>
+      <div class="row"><span>Nightly opportunity scanner — last run</span><span class="state" id="scanner-state">—</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Render lanes</h2>
+    <div class="card">
+      <ul>
+        <li>MacBook lane: verified Oct 13, 2026 — 23s real-job render</li>
+        <li>Tower lane: verified Oct 13, 2026 — 20s real-job render</li>
+      </ul>
+      <p class="small" style="margin-top:8px;">Visualizer jobs render on two studio machines, so overnight orders don’t queue behind a single computer. Lane checks above are from the studio’s verified test runs, not a live feed.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+function fmtTime(iso) {
+  if (!iso) return null;
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleString();
+}
+function setState(id, ok, label) {
+  var el = document.getElementById(id);
+  el.textContent = label;
+  el.className = 'state ' + (ok === true ? 'ok' : ok === false ? 'bad' : 'unknown');
+}
+fetch('status.json', { cache: 'no-store' })
+  .then(function(r) { if (!r.ok) throw new Error('status file missing'); return r.json(); })
+  .then(function(s) {
+    document.getElementById('last-check').textContent = fmtTime(s.updated_at) || 'no check recorded yet';
+    function one(prefix, entry) {
+      if (!entry || entry.ok === null || entry.ok === undefined) { setState(prefix + '-state', null, 'not checked yet'); return null; }
+      setState(prefix + '-state', entry.ok, entry.ok ? ('Up · HTTP ' + entry.http) : ('Down · HTTP ' + (entry.http || 'no response')));
+      return entry.ok;
+    }
+    var a = one('site', s.site), b = one('demo', s.demo);
+    var sc = document.getElementById('scanner-state');
+    sc.textContent = (s.scanner && fmtTime(s.scanner.last_run)) || 'runs nightly; last run not posted here yet';
+    var dot = document.getElementById('overall-dot'), txt = document.getElementById('overall-text');
+    if (a === true && b === true) { dot.className = 'dot ok'; txt.textContent = 'All checked systems are up.'; }
+    else if (a === false || b === false) { dot.className = 'dot bad'; txt.textContent = 'Something is down — the studio has been notified by the failed check itself.'; }
+    else { dot.className = 'dot'; txt.textContent = 'No check recorded yet — the first automated run fills this in.'; }
+  })
+  .catch(function() {
+    document.getElementById('overall-text').textContent = 'Status data unavailable right now.';
+    document.getElementById('last-check').textContent = '—';
+  });
+</script>
+</body>
+</html>
