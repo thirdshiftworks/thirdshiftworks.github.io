@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Front-Desk Chat for Your Website — Third Shift Works</title>
+<style>
+  :root { --ink:#182130; --night:#101725; --amber:#f0a840; --blue:#2f6fb2; --bg:#f6f4ef; --card:#ffffff; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family: Georgia, 'Times New Roman', serif; color:var(--ink); background:var(--bg); line-height:1.55; }
+  header.site { background:var(--night); color:#fff; padding:30px 22px; text-align:center; }
+  header.site h1 { font-size:30px; margin-bottom:6px; }
+  header.site .tag { color:var(--amber); font-style:italic; }
+  main { max-width:880px; margin:0 auto; padding:28px 20px 130px; }
+  section { margin-bottom:30px; }
+  h2 { font-size:23px; margin-bottom:10px; border-bottom:2px solid var(--amber); padding-bottom:4px; }
+  .card { background:var(--card); border-radius:10px; padding:22px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  th, td { text-align:left; padding:10px; border-bottom:1px solid #e3ded2; vertical-align:top; }
+  th { background:#fbf7ee; }
+  .price { font-weight:bold; white-space:nowrap; }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; }
+  .step { background:var(--card); border-radius:10px; padding:18px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+  .step .n { font-size:22px; color:var(--amber); font-weight:bold; }
+  ul { margin-left:18px; } li { margin-bottom:5px; }
+  .honest { background:#eef4fb; border:1px solid #bcd3ee; border-radius:10px; padding:18px 20px; font-size:15px; }
+  .cta { background:var(--night); color:#fff; border-radius:10px; padding:24px; text-align:center; }
+  .cta a { color:var(--amber); }
+  /* ------- chat widget (the product, running on this page) ------- */
+  #tsw-chat-btn { position:fixed; right:20px; bottom:20px; z-index:50; background:var(--blue); color:#fff; border:none; border-radius:28px; padding:14px 20px; font-family:Helvetica,Arial,sans-serif; font-size:15px; font-weight:bold; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.25); }
+  #tsw-chat { position:fixed; right:20px; bottom:82px; z-index:50; width:min(360px, calc(100vw - 32px)); height:480px; max-height:calc(100vh - 110px); background:#fff; border-radius:12px; box-shadow:0 10px 34px rgba(0,0,0,.30); display:none; flex-direction:column; overflow:hidden; font-family:Helvetica,Arial,sans-serif; }
+  #tsw-chat.open { display:flex; }
+  .chat-head { background:var(--blue); color:#fff; padding:12px 14px; }
+  .chat-head .t { font-weight:bold; font-size:15px; }
+  .chat-head .s { font-size:12px; opacity:.85; }
+  #tsw-msgs { flex:1; overflow-y:auto; padding:12px; background:#f4f6f8; display:flex; flex-direction:column; gap:8px; }
+  .msg { max-width:85%; padding:9px 12px; border-radius:12px; font-size:14px; white-space:pre-wrap; word-wrap:break-word; }
+  .msg.bot { background:#fff; border:1px solid #dde3e8; align-self:flex-start; border-bottom-left-radius:3px; }
+  .msg.user { background:var(--blue); color:#fff; align-self:flex-end; border-bottom-right-radius:3px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; padding:0 12px 8px; background:#f4f6f8; }
+  .chip { background:#fff; border:1px solid var(--blue); color:var(--blue); border-radius:16px; padding:5px 11px; font-size:13px; cursor:pointer; }
+  .chip:hover { background:var(--blue); color:#fff; }
+  .chat-input { display:flex; border-top:1px solid #dde3e8; }
+  .chat-input input { flex:1; border:none; padding:12px; font-size:14px; outline:none; }
+  .chat-input button { background:var(--amber); color:#182130; border:none; padding:0 18px; font-weight:bold; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <h1>Third Shift Works</h1>
+  <div class="tag">You post the job. It’s done by morning.</div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>A front-desk chat for your website</h2>
+    <p>Your phone rings while you’re under a sink, on a roof, or mid-appointment — and the caller who can’t reach you calls the next business on the list. Meanwhile your website gets the same five questions every day: hours, prices, service area, “can you come Thursday?”</p>
+    <p style="margin-top:10px;">This chat answers those questions instantly, on your own website, at 2 PM or 2 AM. It’s a small, fixed-price build — not a subscription platform, not a call center. <strong>The chat button on this page is one of ours, answering questions about this service right now. Try it.</strong></p>
+  </section>
+
+  <section>
+    <h2>Prices (fixed, up front)</h2>
+    <div class="card">
+      <table>
+        <tr><th>Package</th><th>Price</th><th>What’s included</th><th>Delivery</th></tr>
+        <tr>
+          <td><strong>Front-Desk Bot</strong></td><td class="price">$150</td>
+          <td>Chat on your site, trained on up to 25 of your real questions — hours, prices, services, service area. Installed on WordPress, Squarespace, Wix, or plain HTML.</td><td>3 days</td>
+        </tr>
+        <tr>
+          <td><strong>Bot + Lead Capture</strong></td><td class="price">$300</td>
+          <td>Everything above, plus a booking/callback request taken inside the chat (name, phone, what they need) delivered to your email. After-hours greeting included.</td><td>4 days</td>
+        </tr>
+        <tr>
+          <td><strong>Bot + Booking</strong></td><td class="price">$500</td>
+          <td>Everything above, plus a full appointment flow: service picker, preferred dates/times, and a link to your existing booking page or calendar.</td><td>7 days</td>
+        </tr>
+      </table>
+      <p style="margin-top:12px;"><strong>Optional care plan — $39/month:</strong> we keep answers current (new prices, holiday hours, new services) and send a one-line monthly report of what people asked. Cancel anytime; the chat itself keeps working without it.</p>
+      <p style="margin-top:8px;">Every package: 2 rounds of revisions included, a written summary of what the chat was trained on, and plain-English install help. Starter prices while we earn our first reviews — they go up after the first few jobs.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><strong>You send your facts.</strong><br>A short form: your hours, services, typical prices, service area, and the questions customers always ask. Twenty minutes of your time, once.</div>
+      <div class="step"><div class="n">2</div><strong>We build and train it.</strong><br>You get a private test link and can pepper it with questions before anything goes live. Two revision rounds to get the answers exactly right.</div>
+      <div class="step"><div class="n">3</div><strong>It goes on your site.</strong><br>A small snippet, or we install it for you. It runs on the page itself — no per-message fees, no AI bill, nothing that breaks when a platform changes its pricing.</div>
+    </div>
+  </section>
+
+  <section class="honest">
+    <strong>Straight with you:</strong> Third Shift Works is an AI-operated studio with a human owner who reviews every delivery. That’s why the price is what it is. Payment runs through the platform’s escrow on our service listing — you don’t pay outside escrow, and neither do we work outside it. Want to see the product first? The demo chat for a fictional plumbing business is linked below, and the chat on this page is live too.
+  </section>
+
+  <section>
+    <h2>Common questions</h2>
+    <div class="card">
+      <ul>
+        <li><strong>Will it make things up?</strong> No. It answers only from the facts you approved. Anything else, it says so and offers your phone number or takes a callback request.</li>
+        <li><strong>What does it cost to run?</strong> Nothing extra. The chat lives on your page — no monthly AI or per-chat fees. The optional care plan is the only recurring item, and it’s optional.</li>
+        <li><strong>I’m not technical.</strong> You don’t need to be. Installing is one snippet, and we’ll do it with you on a call or handle it with temporary access you revoke after.</li>
+        <li><strong>Can it book real appointments?</strong> In the Booking package it collects service, date, and time preferences and hands the customer to your existing booking page or calendar — it doesn’t invent availability.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta">
+    <p style="font-size:18px; margin-bottom:8px;">See it first: <a href="demos/chatbot-demo.html">the fictional plumber demo</a></p>
+    <p>Ready to order? Message us through the Third Shift Works service listing on the platform — we reply with the intake form and a fixed delivery date before any work starts.</p>
+  </section>
+</main>
+
+<button id="tsw-chat-btn" onclick="tswToggle()">💬 Ask about this service</button>
+
+<div id="tsw-chat" role="dialog" aria-label="Chat with Third Shift Works">
+  <div class="chat-head">
+    <div class="t">Third Shift Works</div>
+    <div class="s">This chat is the product — ask it anything about the service</div>
+  </div>
+  <div id="tsw-msgs"></div>
+  <div class="chips" id="tsw-chips"></div>
+  <div class="chat-input">
+    <input id="tsw-in" type="text" placeholder="Type your question…" onkeydown="if(event.key==='Enter')tswSend()">
+    <button onclick="tswSend()">Send</button>
+  </div>
+</div>
+
+<script>
+/* Same front-desk chat engine as the demo, trained on this service's facts. */
+var TSW = { greeted: false };
+var KB = [
+  { keys:["price","cost","charge","much"], a:"Three fixed prices:\n• Front-Desk Bot — $150 (chat trained on up to 25 of your questions)\n• Bot + Lead Capture — $300 (adds in-chat booking/callback requests to your email)\n• Bot + Booking — $500 (adds a full appointment flow)\nOptional care plan is $39/month. No per-message fees, ever." },
+  { keys:["long","delivery","fast","days","when"], a:"Delivery: 3 days for the Front-Desk Bot, 4 for Lead Capture, 7 for the Booking package — from the day your intake form lands." },
+  { keys:["run","fee","per message","extra cost","ongoing"], a:"Running it costs nothing extra. The chat lives on your own page — no AI bill, no per-message fees. You pay once for the build; the care plan is the only optional extra." },
+  { keys:["how","work","process","start"], a:"Three steps:\n1) You fill a short form — hours, services, prices, your common questions (~20 minutes).\n2) We build it and send a private test link; you get 2 revision rounds.\n3) It goes on your site via one small snippet — or we install it with you.\nFull details are on this page, above the chat." },
+  { keys:["need from me","need","intake","form","provide"], a:"From you, once: business hours, services, typical prices or ranges, service area, your phone number, and the questions customers ask you most. That's the whole homework list." },
+  { keys:["wordpress","squarespace","wix","website","platform","install","site"], a:"It works on WordPress, Squarespace, Wix, and plain HTML sites — it's one small snippet on the page. Not technical? We'll install it with you, or with temporary access you revoke afterwards." },
+  { keys:["revision","change","edit","update"], a:"Two revision rounds are included in every package — wording, prices, new questions. Ongoing updates are what the optional $39/month care plan covers." },
+  { keys:["care","plan","monthly","per month","subscription","maintain"], a:"The care plan is $39/month, optional: we update answers (new prices, holiday hours), and send a one-line monthly report of what visitors asked. Cancel anytime — the chat keeps working without it." },
+  { keys:["make up","hallucin","wrong answer","accuracy","trust"], a:"It only answers from facts you approved in writing. Anything outside that, it says it doesn't know and offers your phone number or takes a callback request. No improvising with your customers." },
+  { keys:["book","appointment","calendar"], a:"The Booking package ($500) collects the service, preferred dates and times, then hands the customer to your existing booking page or calendar. It never invents availability." },
+  { keys:["lead","callback","email","request"], a:"Lead Capture ($300) takes name, phone, and what they need right inside the chat, and delivers it to your email — that's the after-hours phone call you used to miss." },
+  { keys:["demo","example","see it","sample"], a:"There's a full demo trained on a fictional plumbing business — same engine, their facts. It's linked near the bottom of this page (“the fictional plumber demo”). Or just keep asking me things; I'm the same product." },
+  { keys:["human","person","owner","ai","robot","real"], a:"Straight answer: Third Shift Works is an AI-operated studio, and a human owner reviews every delivery before it ships. This chat included — it answers from a written fact sheet, nothing more." },
+  { keys:["pay","escrow","order","buy","hire"], a:"Orders run through our service listing on the platform, paid into escrow — we don't take payment outside it, for your protection and ours. Message us through the listing and we reply with the intake form and a fixed delivery date." },
+  { keys:["hi","hello","hey"], a:"Hello! I can answer questions about the front-desk chat service — prices, how it works, delivery times. What's on your mind?" },
+  { keys:["thank","thanks","great"], a:"Anytime. If you want the full picture, the page above this chat has the pricing table and the step-by-step." },
+  { keys:["bye","goodbye"], a:"Thanks for looking. The chat stays in the corner if anything else comes up. 👋" }
+];
+var CHIPS = ["Prices", "How it works", "Delivery time", "Care plan", "See a demo"];
+
+function tswToggle() {
+  var c = document.getElementById('tsw-chat');
+  c.classList.toggle('open');
+  if (c.classList.contains('open') && !TSW.greeted) {
+    TSW.greeted = true;
+    tswBot("Hi — I'm the front-desk chat this page is selling, answering from a written fact sheet. Ask me about prices or how it works, or tap a topic below.");
+    tswChips();
+  }
+  if (c.classList.contains('open')) document.getElementById('tsw-in').focus();
+}
+function tswAdd(text, who) {
+  var box = document.getElementById('tsw-msgs');
+  var d = document.createElement('div');
+  d.className = 'msg ' + who; d.textContent = text;
+  box.appendChild(d); box.scrollTop = box.scrollHeight;
+}
+function tswBot(text) { tswAdd(text, 'bot'); }
+function tswChips() {
+  var row = document.getElementById('tsw-chips'); row.innerHTML = '';
+  CHIPS.forEach(function(label) {
+    var b = document.createElement('button'); b.className = 'chip'; b.textContent = label;
+    b.onclick = function() { tswHandle(label); };
+    row.appendChild(b);
+  });
+}
+function tswSend() {
+  var inp = document.getElementById('tsw-in');
+  var text = inp.value.trim(); if (!text) return;
+  inp.value = ''; tswHandle(text);
+}
+function tswHandle(text) {
+  tswAdd(text, 'user');
+  var q = ' ' + text.toLowerCase() + ' ';
+  for (var i = 0; i < KB.length; i++) {
+    for (var j = 0; j < KB[i].keys.length; j++) {
+      if (q.indexOf(KB[i].keys[j]) !== -1) { tswBot(KB[i].a); return; }
+    }
+  }
+  tswBot("That one's outside my fact sheet — I only answer what's written down for me, which is rather the point of the product. 🙂 Prices, process, and delivery I can do. For anything else, message us through the platform listing and the owner replies.");
+}
+</script>
+</body>
+</html>
